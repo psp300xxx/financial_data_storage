@@ -1,10 +1,12 @@
 package com.finance_tracker.finance_tracker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.finance_tracker.finance_tracker.dto.CustomerDTO;
 import com.finance_tracker.finance_tracker.dto.DTOObject;
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -28,6 +30,10 @@ public class Customer implements DTOObject<CustomerDTO> {
     @JsonProperty("Salt")
     @Column(name = "salt", nullable = false, updatable = false)
     private String salt;
+
+    @OneToMany(mappedBy = "customer")
+    @JsonIgnore
+    private List<MoneyTransfer> transfers;
 
     @PrePersist
     public void generateSalt(){
@@ -57,6 +63,10 @@ public class Customer implements DTOObject<CustomerDTO> {
 
     public String getUsername() {
         return username;
+    }
+
+    public List<MoneyTransfer> getTransfers() {
+        return transfers;
     }
 
     public void setUsername(String username) {

@@ -22,10 +22,10 @@ public interface IMoneyTransferRepository extends CrudRepository<MoneyTransfer, 
 
     List<MoneyTransfer> findAllByExecutionTimeBetween(ZonedDateTime start, ZonedDateTime end);
 
-    List<MoneyTransfer> findAllByExecutionTimeBeforeAndCustomerId(ZonedDateTime executionTime, int customerId);
+    List<MoneyTransfer> findAllByExecutionTimeBeforeAndCustomerId(ZonedDateTime executionTime, long customerId);
 
-    List<MoneyTransfer> findAllByExecutionTimeAfterAndCustomerId(ZonedDateTime executionTime, int customerId);
+    List<MoneyTransfer> findAllByExecutionTimeAfterAndCustomerId(ZonedDateTime executionTime, long customerId);
 
-    List<MoneyTransfer> findAllByExecutionTimeBetweenAndCustomerId(ZonedDateTime start, ZonedDateTime end, int customerId);
+    List<MoneyTransfer> findAllByExecutionTimeBetweenAndCustomerId(ZonedDateTime start, ZonedDateTime end, long customerId);
 
 }

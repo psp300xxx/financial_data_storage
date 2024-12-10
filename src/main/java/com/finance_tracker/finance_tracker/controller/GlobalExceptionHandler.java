@@ -27,4 +27,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(AlreadyExistingTransferException.class)
+    public ResponseEntity<ErrorResponse> handleAlreadyExistingException(AlreadyExistingTransferException ex) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        ErrorResponse errorResponse = new ErrorResponse(status.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, status);
+    }
+
 }

@@ -1,13 +1,16 @@
 package com.finance_tracker.finance_tracker.service;
 
+import com.finance_tracker.finance_tracker.controller.AlreadyExistingTransferException;
 import com.finance_tracker.finance_tracker.model.MoneyTransfer;
 import com.finance_tracker.finance_tracker.repository.IMoneyTransferRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,9 +36,14 @@ public class MoneyTransactionService implements IMoneyTransactionService {
 
 
     @Override
+    @Transactional
     public MoneyTransfer createTransaction(MoneyTransfer moneyTransfer) {
-        MoneyTransfer newMoneyTransfer = moneyTransferRepository.save(moneyTransfer);
-        return newMoneyTransfer;
+        List<MoneyTransfer> alreadyPresentMoneyTransfer = moneyTransferRepository.findAllByExecutionTimeBetweenAndCustomerId(moneyTransfer.getExecutionTime(), moneyTransfer.getExecutionTime(), moneyTransfer.getCustomer().getId());
+        if(alreadyPresentMoneyTransfer!=null && !alreadyPresentMoneyTransfer.isEmpty()) {
+            final String errorMsg = String.format("A transaction for customer_id = '%d' at time = '%s' already exists", moneyTransfer.getCustomer().getId(), moneyTransfer.getExecutionTime());
+            throw new AlreadyExistingTransferException(errorMsg);
+        }
+        return moneyTransferRepository.save(moneyTransfer);
     }
 
     @Override

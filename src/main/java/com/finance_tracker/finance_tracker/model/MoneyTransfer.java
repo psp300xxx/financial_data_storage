@@ -1,7 +1,9 @@
 package com.finance_tracker.finance_tracker.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.finance_tracker.finance_tracker.dto.CustomerDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -17,8 +19,8 @@ public class MoneyTransfer {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
-    @JsonProperty("CustomerId")
+    @JoinColumn(name = "customerId", nullable = false)
+    @JsonIgnore
     private Customer customer;
 
     @JsonProperty("Amount")
@@ -44,6 +46,11 @@ public class MoneyTransfer {
 
     public Customer getCustomer() {
         return customer;
+    }
+
+    @JsonProperty("Customer")
+    public CustomerDTO getCustomerDTO() {
+        return customer.convert();
     }
 
     public void setCustomer(Customer customer) {

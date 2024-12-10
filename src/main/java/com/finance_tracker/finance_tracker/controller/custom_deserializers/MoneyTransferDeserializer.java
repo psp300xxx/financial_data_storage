@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 public class MoneyTransferDeserializer extends JsonDeserializer<MoneyTransfer> {
 
@@ -30,9 +31,12 @@ public class MoneyTransferDeserializer extends JsonDeserializer<MoneyTransfer> {
         JsonNode node = p.getCodec().readTree(p);
 
         MoneyTransfer moneyTransfer = new MoneyTransfer();
-        Long customerId = node.get("CustomerId").asLong();
-        Customer customer = customerRepository.findById(customerId);
-
+        Long customerId = node.get("Customer").asLong();
+        Optional<Customer> customerOpt = customerRepository.findById(customerId);
+        if(!customerOpt.isPresent()){
+            throw new IllegalArgumentException("Customer with id "+ customerId +"not found");
+        }
+        Customer customer = customerOpt.get();
         moneyTransfer.setCustomer(customer);
         moneyTransfer.setAmount(node.get("Amount").asDouble());
         moneyTransfer.setCurrencyCode(node.get("Currency").asText());
